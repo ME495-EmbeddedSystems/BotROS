@@ -1,0 +1,4 @@
+There are two files here:
+
+dots1.py uses turtle and is slower and felt a little janky. 
+dots2.py is more robust, it was made with help from Chat GPT.
