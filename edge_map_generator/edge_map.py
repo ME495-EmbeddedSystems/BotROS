@@ -60,10 +60,35 @@ def edge_map(image):
     print("number of robot waypoints:", len(outline))
     return edges, outline
 
+def simple_circle(): 
+    x_range = (0, 0.5)
+    y_range = (-0.25, 0.25)
+
+    points = []
+    for i in range(0, 360, 45): 
+        angle = i * np.pi / 180 #cvt to radians 
+        x = x_range[0] + (x_range[1] - x_range[0]) * (0.5 + 0.5 * np.cos(angle))
+        y = y_range[0] + (y_range[1] - y_range[0]) * (0.5 + 0.5 * np.sin(angle))
+        points.append((x, y))
+
+    # plot the circle
+    fig, ax = plt.subplots()
+    ax.set_aspect('equal')
+    ax.scatter(*zip(*points))
+    plt.show()
+    return points
+
+def save_to_csv(waypoints_list, filename):
+
+    np.savetxt(filename, waypoints_list, delimiter=",")
 
 def main(): 
-    edges, outline = edge_map('nader_pic.jpg') 
+    edges, picture_points = edge_map('nader_pic.jpg') 
 
+    circle_points = simple_circle()
+
+    save_to_csv(circle_points, "circle_points.csv")
+    
 
 if __name__ == "__main__": 
     main()
