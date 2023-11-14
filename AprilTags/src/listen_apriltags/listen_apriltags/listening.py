@@ -1,105 +1,132 @@
 import rclpy
 from rclpy.node import Node
 from listen_apriltags_interface.srv import Location
+from listen_apriltags_interface.msg import Loc
 from tf2_ros.transform_listener import TransformListener
 from tf2_ros.buffer import Buffer
 from tf2_ros import TransformException
+from enum import Enum, auto
+import numpy as np
+
+class State(Enum):
+
+    CALIBRATING = auto(),
+    TRANSFORMING = auto(),
+
 
 class listener(Node):
 
     def __init__(self):
         super().__init__('listener')
 
-        # create service for paint brush positions
-        self.paintbrush_service = self.create_service(Location, 'pb_location', self.pb_callback)
+        # # create service for apriltag positions
+        # self.paintbrush_service = self.create_service(Location, 'pb_location', self.pb_callback)
+
+        # create publihsers for apriltag positions
+        self.pub_paint = self.create_publisher(Loc, 'paint_loc', 10)
 
         # initialized transform
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
 
-        self.count1 = 0
-        self.count2 = 0
-
         self.timer = self.create_timer(0.05, self.timer_callback)
 
-        self.t1 = None
-        self.t2 = None
+        self.camera_to_ee = None
+        self.base_to_ee = None
+
+        self.state = State.CALIBRATING
 
     def timer_callback(self):
         """Print the transform from platform to brick."""
-        source_frame = "camera_color_frame"
-        target_frame1 = "tag36h11:0"
-        target_frame2 = "tag36h11:1"
 
-        try:
-            t = self.tf_buffer.lookup_transform(
-                target_frame1, source_frame, rclpy.time.Time()
-            )
-            self.t1 = [
-                t.transform.translation.x,
-                t.transform.translation.y,
-                t.transform.translation.z,
-            ]
+        if self.state == State.CALIBRATING:
+            
+            camera_frame = "camera_color_optical_frame"
+            tag_frame6 = "tag36h11:0"
+            robo_ee_frame = "panda_link8"
+            robo_base_frame = "panda_link0"
 
-            self.get_logger().info(
-                f"Transform bw tag0 time {rclpy.time.Time()}"
-            )
+            # robot to camera transform
+            try:
+                t = self.tf_buffer.lookup_transform(tag_frame6, camera_frame, rclpy.time.Time())
+                self.camera_to_ee = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z,]
 
-            if (self.count1 % 5) == 0:
-                self.get_logger().info(
-                    f"Transform tag0 x={self.t1[0]}, y={self.t1[1]}, z={self.t1[2]}"
-                )
+            except TransformException as ex:
+                self.get_logger().info(f"Could not transform {camera_frame} to {tag_frame6}: {ex}")
 
-            self.count1 +=1
+            # robot to base transform
+            try:
+                t = self.tf_buffer.lookup_transform(robo_ee_frame, robo_base_frame, rclpy.time.Time())
+                self.base_to_ee = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z]
 
-        except TransformException as ex:
-            self.get_logger().info(
-                f"Could not transform {source_frame} to {target_frame1}: {ex}"
-            )
+            except TransformException as ex:
+                self.get_logger().info(f"Could not transform {robo_base_frame} to {robo_ee_frame}: {ex}")
 
-        try:
-            t = self.tf_buffer.lookup_transform(
-                target_frame2, source_frame, rclpy.time.Time()
-            )
-            self.t2 = [
-                t.transform.translation.x,
-                t.transform.translation.y,
-                t.transform.translation.z,
-            ]
+            if (self.camera_to_ee is not None) and (self.base_to_ee is not None):
+                self.camera_to_base = self.camera_to_robot_transform()
+                self.get_logger().info('Got transform from camera to robot base')
+                self.get_logger().info(f'Base: x={self.base_to_ee[0]}, y={self.base_to_ee[1]}, z={self.base_to_ee[2]}')
+                self.get_logger().info(f'Camera: x={self.camera_to_ee[0]}, y={self.camera_to_ee[1]}, z={self.camera_to_ee[2]}')
+                self.get_logger().info(f'Transform: x={self.camera_to_base[0]}, y={self.camera_to_base[1]}, z={self.camera_to_base[2]}')
+                self.state = State.TRANSFORMING
 
-            self.get_logger().info(
-                f"Transform bw tag1 time {rclpy.time.Time()}"
-            )
+        if self.state == State.TRANSFORMING:
+            camera_frame = "camera_color_frame"
+            tag_frame1 = "tag36h11:1"
+            tag_frame5 = "tag36h11:2"
 
-            if (self.count2 % 5) == 0:
-                self.get_logger().info(
-                    f"Transform tag0 x={self.t2[0]}, y={self.t2[1]}, z={self.t2[2]}"
-                )
+            # initialize message types
+            paint = Loc()
 
-            self.count2 +=1
+            # paint brush rack transform
+            try:
+                t = self.tf_buffer.lookup_transform(tag_frame1, camera_frame, rclpy.time.Time())
+                self.t1 = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z]
 
-        except TransformException as ex:
-            self.get_logger().info(
-                f"Could not transform {source_frame} to {target_frame2}: {ex}"
-            )
+                # transform to robot frame
+                self.robot_to_brush = [self.t1[0] - self.camera_to_base[0], self.t1[1] - self.camera_to_base[1], self.t1[2] - self.camera_to_base[2]]
 
-    def pb_callback(self, request, response):
+                # individual paints:
+                # hard code the axes of april tag, so circles along y axis and centered on x axis
+                paint.red = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.04, self.robot_to_brush[2]]
+                paint.blue = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.09, self.robot_to_brush[2]]
+                paint.green = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.14, self.robot_to_brush[2]]
+                paint.yellow = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.19, self.robot_to_brush[2]]
 
-        if self.t1 is not None:
-            response.red = self.t1
-        else:
-            response.red = []
-        
-        if self.t2 is not None:
-            response.blue = self.t2
-        else:
-            response.blue = []
+            except TransformException as ex:
+                self.get_logger().info(f"Could not transform {camera_frame} to {tag_frame1}: {ex}")
+                paint.red = []
+                paint.blue = []
+                paint.green = []
+                paint.yellow = []
 
-        self.get_logger().info('In service callback')
-        print(response.red)
-        print(response.blue)
+            # paint palete transform
+            try:
+                t = self.tf_buffer.lookup_transform(tag_frame5, camera_frame, rclpy.time.Time())
+                self.t5 = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z,]
 
-        return response
+                # transform to robot frame
+                self.robot_to_palete = [self.t5[0] - self.camera_to_base[0], self.t5[1] - self.camera_to_base[1], self.t5[2] - self.camera_to_base[2]]
+
+                paint.palete = self.robot_to_palete
+
+            except TransformException as ex:
+                self.get_logger().info(f"Could not transform {camera_frame} to {tag_frame5}: {ex}")
+                paint.palete = []
+
+            # publish to topic
+            self.pub_paint.publish(paint)
+
+    def camera_to_robot_transform(self):
+
+        Pr = self.base_to_ee
+        Pc = self.camera_to_ee
+
+        Px = Pc[0] - Pr[1]
+        Py = Pc[1] + Pr[0]
+        Pz = Pc[2] + Pr[2]
+
+        return [Px, Py, Pz]
 
 def main(args=None):
     """Run node function."""
