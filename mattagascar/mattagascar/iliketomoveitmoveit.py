@@ -70,6 +70,7 @@ class ILikeToMoveItMoveIt(Node):
 
         self.waypoints = coordinate_list
 
+        # paint location
         self.z_standoff = 0.25
         self.z_dot = 0.19
         self.paint_location_standoff = Pose()
@@ -85,16 +86,16 @@ class ILikeToMoveItMoveIt(Node):
         self.paint_location_dip.position.z = self.z_dot
         self.paint_location_dip.orientation = self.orientation
 
-        # pickup location
-        # self.pickuploc = [0.44337, 0.244664, 0.065]
+        # paintbrush location
         # standoff pose
         self.pickup_loc = Pose()
-        # self.pickup_orientation = Quaternion(x=0.99958, y=-0.01098, z=0.02167, w=0.01567)
+        # this is the position of the paint pallete 
         self.pickup_loc.position.x = 0.44337
         self.pickup_loc.position.y = 0.244664
         self.pickup_loc.position.z = self.z_standoff
         self.pickup_loc.orientation = self.orientation
 
+        # this is the robot going to fetch paint
         self.pickup_dip = Pose()
         self.pickup_dip.position.x = self.pickup_loc.position.x
         self.pickup_dip.position.y = self.pickup_loc.position.y
@@ -104,24 +105,19 @@ class ILikeToMoveItMoveIt(Node):
         self.pick_msg_wpts = []
         self.pick_msg_wpts.append(self.pickup_loc)
         self.pick_msg_wpts.append(self.pickup_dip)
-        # self.pick_msg_wpts.append(self.pickup_loc)
 
         #
         self.visited = []
         self.count = 0
-        
-        # self.pick_msg_wpts.append(self.pickuploc, self.dipping)
+
     def timer_callback(self):
-        # self.get_logger().info(f"\n\tNOTE: State of King Julien: {self.KingJulien.state}")
-        # every state wrapper has, need an if statement for each state\
         if self.state == State.PICKUP:
+            # go to paint brush location and dip down
             self.KingJulien.plan_path_cartesian(self.pick_msg_wpts)
             self.state = State.PLANNING_GRIPPER
-  
+
         elif self.state == State.PLANNING_GRIPPER:
             self.get_logger().info('IN PLANNING GRIPPER', once=True)
-            # this needs to be changed; need to figure out how to get it to pick up and then close gripper and then return to standoff
-            # might need to add more state machine things to make it work
             if self.KingJulien.state == self.Mort.EXECUTING:
                 self.get_logger().info('EXECUTING', once=True)
                 self.state = State.EXECUTING1
@@ -129,28 +125,19 @@ class ILikeToMoveItMoveIt(Node):
         elif self.state == State.EXECUTING1:
             self.get_logger().info('Waiting for Execution to be done', once=True)
             if self.KingJulien.state == self.Mort.DONE:
-                # self.state = State.GRIPPERWAYPT
                 self.state = State.GRIPPERCLOSE
 
         elif self.state == State.GRIPPERCLOSE:
             self.get_logger().info('\n\tNOTE: ILikeToMoveItMoveItGRIPPERCLOSING', once=True)
             self.grasp_close_goal = self.grasping.create_close_grasp_msg()
             if self.grasping.state == self.Mort.CLOSE:
+                # needs to go to standoff position of paintbursh to pick it up
                 self.state = State.PICKBRUSH
 
         elif self.state == State.PICKBRUSH:
-            # might actually need to do pose_orientation then instead and just send the pickup_msgs stuff
-            # self.pick_msg_wpts.append(self.pickup_loc)
-            print("in pickup brushHHHHH")
-            self.get_logger().info('IN PICKUP BRUSH')
+            # this is the position of the paint brush
             self.pickup = [0.44337, 0.244664, 0.25]
-            # self.pickup = Pose()
-            # self.pickup_orientation = Quaternion(x=0.99958, y=-0.01098, z=0.02167, w=0.01567)
-            # self.pickup.position.x = 0.44337
-            # self.pickup.position.y = 0.244664
-            # self.pickup.position.z = self.z_standoff
             self.KingJulien.plan_path_to_position_orientation(self.pickup, self.orientation)
-            # self.KingJulien.plan_path_to_position(self.pickup)
             self.state = State.UP
 
         elif self.state == State.UP:
@@ -159,8 +146,6 @@ class ILikeToMoveItMoveIt(Node):
         elif self.state == State.EXEC:
             if self.KingJulien.state == self.Mort.DONE:
                 self.state = State.INITIALIZE
-
-        # maybe get it into ready state and then begin painting
 
         elif self.state == State.INITIALIZE:
 
