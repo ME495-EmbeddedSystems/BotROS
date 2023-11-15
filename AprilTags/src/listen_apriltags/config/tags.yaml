@@ -1,6 +1,6 @@
 # config file from github
 
-/apriltag:                 # node name
+/**:                 # node name
   ros__parameters:
     # setup (defaults)
     image_transport: compressed  # image format: "raw" or "compressed"
