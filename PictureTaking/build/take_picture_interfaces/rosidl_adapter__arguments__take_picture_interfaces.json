@@ -1,7 +1,0 @@
-{
-  "package_name": "take_picture_interfaces",
-  "non_idl_tuples": [
-    "/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/src/take_picture_interfaces:msg/Waypoint.msg",
-    "/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/src/take_picture_interfaces:msg/WaypointList.msg"
-  ]
-}

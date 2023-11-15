@@ -1,3 +1,0 @@
-[console_scripts]
-picture_node = take_picture.picture_node:main
-

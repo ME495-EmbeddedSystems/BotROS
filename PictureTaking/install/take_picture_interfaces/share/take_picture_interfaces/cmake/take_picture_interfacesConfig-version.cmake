@@ -1,1 +1,0 @@
-/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/build/take_picture_interfaces/ament_cmake_core/take_picture_interfacesConfig-version.cmake
