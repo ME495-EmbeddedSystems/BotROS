@@ -31,8 +31,13 @@ class listener(Node):
 
         self.timer = self.create_timer(0.05, self.timer_callback)
 
-        self.camera_to_ee = None
-        self.base_to_ee = None
+        self.camera_to_tag = None
+        self.base_to_tag = [0.5017, -0.2306, 0.0168]
+
+        self.brush_tag_offset_x = 0.05
+        self.brush_tag_offset_y = 0.05
+        self.bw_brush_inc_y = 0.05
+
 
         self.state = State.CALIBRATING
 
@@ -43,35 +48,35 @@ class listener(Node):
             
             camera_frame = "camera_color_optical_frame"
             tag_frame6 = "tag36h11:0"
-            robo_ee_frame = "panda_link8"
-            robo_base_frame = "panda_link0"
+            # robo_ee_frame = "panda_link8"
+            # robo_base_frame = "panda_link0"
 
             # robot to camera transform
             try:
-                t = self.tf_buffer.lookup_transform(tag_frame6, camera_frame, rclpy.time.Time())
-                self.camera_to_ee = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z,]
+                t = self.tf_buffer.lookup_transform(camera_frame, tag_frame6, rclpy.time.Time())
+                self.camera_to_tag = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z,]
 
             except TransformException as ex:
-                self.get_logger().info(f"Could not transform {camera_frame} to {tag_frame6}: {ex}")
+                self.get_logger().info(f"Could not transform {tag_frame6} to {camera_frame}: {ex}")
 
-            # robot to base transform
-            try:
-                t = self.tf_buffer.lookup_transform(robo_ee_frame, robo_base_frame, rclpy.time.Time())
-                self.base_to_ee = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z]
+            # # robot to base transform
+            # try:
+            #     t = self.tf_buffer.lookup_transform(robo_base_frame, robo_ee_frame, rclpy.time.Time())
+            #     self.base_to_ee = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z]
 
-            except TransformException as ex:
-                self.get_logger().info(f"Could not transform {robo_base_frame} to {robo_ee_frame}: {ex}")
+            # except TransformException as ex:
+            #     self.get_logger().info(f"Could not transform {robo_ee_frame} to {robo_base_frame}: {ex}")
 
-            if (self.camera_to_ee is not None) and (self.base_to_ee is not None):
+            if (self.camera_to_tag is not None) and (self.base_to_tag is not None):
                 self.camera_to_base = self.camera_to_robot_transform()
                 self.get_logger().info('Got transform from camera to robot base')
-                self.get_logger().info(f'Base: x={self.base_to_ee[0]}, y={self.base_to_ee[1]}, z={self.base_to_ee[2]}')
-                self.get_logger().info(f'Camera: x={self.camera_to_ee[0]}, y={self.camera_to_ee[1]}, z={self.camera_to_ee[2]}')
+                self.get_logger().info(f'Base: x={self.base_to_tag[0]}, y={self.base_to_tag[1]}, z={self.base_to_tag[2]}')
+                self.get_logger().info(f'Camera: x={self.camera_to_tag[0]}, y={self.camera_to_tag[1]}, z={self.camera_to_tag[2]}')
                 self.get_logger().info(f'Transform: x={self.camera_to_base[0]}, y={self.camera_to_base[1]}, z={self.camera_to_base[2]}')
                 self.state = State.TRANSFORMING
 
         if self.state == State.TRANSFORMING:
-            camera_frame = "camera_color_frame"
+            camera_frame = "camera_color_optical_frame"
             tag_frame1 = "tag36h11:1"
             tag_frame5 = "tag36h11:2"
 
@@ -84,29 +89,35 @@ class listener(Node):
                 self.t1 = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z]
 
                 # transform to robot frame
-                self.robot_to_brush = [self.t1[0] - self.camera_to_base[0], self.t1[1] - self.camera_to_base[1], self.t1[2] - self.camera_to_base[2]]
+
+                self.robot_to_brush = self.in_robot_frame(self.t1)
 
                 # individual paints:
                 # hard code the axes of april tag, so circles along y axis and centered on x axis
-                paint.red = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.04, self.robot_to_brush[2]]
-                paint.blue = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.09, self.robot_to_brush[2]]
-                paint.green = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.14, self.robot_to_brush[2]]
-                paint.yellow = [self.robot_to_brush[0], self.robot_to_brush[1] + 0.19, self.robot_to_brush[2]]
+                paint.red = [self.robot_to_brush[0] + self.brush_tag_offset_x, self.robot_to_brush[1] + self.brush_tag_offset_y, self.robot_to_brush[2]]
+                paint.orange = [paint.red[0], paint.red[1] + self.bw_brush_inc_y, paint.red[2]]
+                paint.yellow = [paint.orange[0], paint.orange[1] + self.bw_brush_inc_y, paint.orange[2]]
+                paint.green = [paint.green[0], paint.green[1] + self.bw_brush_inc_y, paint.green[2]]
+                paint.blue = [paint.blue[0], paint.blue[1] + self.bw_brush_inc_y, paint.blue[2]]
+                paint.purple = [paint.purple[0], paint.purple[1] + self.bw_brush_inc_y, paint.purple[2]]
+
 
             except TransformException as ex:
                 self.get_logger().info(f"Could not transform {camera_frame} to {tag_frame1}: {ex}")
                 paint.red = []
-                paint.blue = []
-                paint.green = []
+                paint.orange = []
                 paint.yellow = []
-
+                paint.green = []
+                paint.blue = []
+                paint.purple = []
+                
             # paint palete transform
             try:
                 t = self.tf_buffer.lookup_transform(tag_frame5, camera_frame, rclpy.time.Time())
                 self.t5 = [t.transform.translation.x, t.transform.translation.y, t.transform.translation.z,]
 
                 # transform to robot frame
-                self.robot_to_palete = [self.t5[0] - self.camera_to_base[0], self.t5[1] - self.camera_to_base[1], self.t5[2] - self.camera_to_base[2]]
+                self.robot_to_palete = self.in_robot_frame(self.t5)
 
                 paint.palete = self.robot_to_palete
 
@@ -119,14 +130,22 @@ class listener(Node):
 
     def camera_to_robot_transform(self):
 
-        Pr = self.base_to_ee
-        Pc = self.camera_to_ee
+        Pr = self.base_to_tag
+        Pc = self.camera_to_tag
 
-        Px = Pc[0] - Pr[1]
-        Py = Pc[1] + Pr[0]
-        Pz = Pc[2] + Pr[2]
+        # robot + camera
+
+        Px = Pc[0] - Pr[0]
+        Py = Pc[1] + Pr[1]
+        Pz = Pc[2] - Pr[2]
 
         return [Px, Py, Pz]
+    
+    def in_robot_frame(self, in_camera_frame):
+
+        robot_frame = [in_camera_frame[0] - self.camera_to_base[0], in_camera_frame[1] - self.camera_to_base[1], in_camera_frame[2] - self.camera_to_base]
+
+        return robot_frame
 
 def main(args=None):
     """Run node function."""
