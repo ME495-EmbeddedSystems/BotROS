@@ -8,6 +8,7 @@ from sensor_msgs.msg import Image
 from example_interfaces.srv import Trigger
 import numpy as np
 from cv_bridge import CvBridge
+# from edge_map import * 
 import cv2
 
 #goal of this node: take a picture with the real sense according to a service call (?) 
@@ -33,7 +34,7 @@ class picture_node(Node):
         # self._inplane = self.create_publisher(PointCloud2, "pcl_inplane", 10)
 
     def image_callback(self,msg): 
-        # self.get_logger().info("Receiving image") 
+        self.get_logger().info("Receiving image") 
         self.last_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8') 
 
 
