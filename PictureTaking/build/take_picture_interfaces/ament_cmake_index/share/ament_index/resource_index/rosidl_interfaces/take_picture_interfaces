@@ -1,0 +1,4 @@
+msg/Waypoint.idl
+msg/Waypoint.msg
+msg/WaypointList.idl
+msg/WaypointList.msg

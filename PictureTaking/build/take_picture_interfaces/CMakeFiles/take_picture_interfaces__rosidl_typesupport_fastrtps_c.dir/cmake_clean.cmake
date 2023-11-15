@@ -1,0 +1,17 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/take_picture_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint__type_support_c.cpp.o"
+  "CMakeFiles/take_picture_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint__type_support_c.cpp.o.d"
+  "CMakeFiles/take_picture_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint_list__type_support_c.cpp.o"
+  "CMakeFiles/take_picture_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint_list__type_support_c.cpp.o.d"
+  "libtake_picture_interfaces__rosidl_typesupport_fastrtps_c.pdb"
+  "libtake_picture_interfaces__rosidl_typesupport_fastrtps_c.so"
+  "rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint_list__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/take_picture_interfaces/msg/detail/waypoint_list__type_support_c.cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/take_picture_interfaces__rosidl_typesupport_fastrtps_c.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

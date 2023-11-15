@@ -1,0 +1,9 @@
+setup.py
+take_picture_interfaces/__init__.py
+take_picture_interfaces.egg-info/PKG-INFO
+take_picture_interfaces.egg-info/SOURCES.txt
+take_picture_interfaces.egg-info/dependency_links.txt
+take_picture_interfaces.egg-info/top_level.txt
+take_picture_interfaces/msg/__init__.py
+take_picture_interfaces/msg/_waypoint.py
+take_picture_interfaces/msg/_waypoint_list.py
