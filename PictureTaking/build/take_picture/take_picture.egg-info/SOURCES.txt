@@ -5,6 +5,7 @@ config/pcl.rviz
 launch/take_picture.launch.xml
 resource/take_picture
 take_picture/__init__.py
+take_picture/edge_map.py
 take_picture/picture_node.py
 take_picture.egg-info/PKG-INFO
 take_picture.egg-info/SOURCES.txt

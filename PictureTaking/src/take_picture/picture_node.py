@@ -8,8 +8,9 @@ from sensor_msgs.msg import Image
 from example_interfaces.srv import Trigger
 import numpy as np
 from cv_bridge import CvBridge
-# from edge_map import * 
+from .edge_map import * 
 import cv2
+import matplotlib.pyplot as plt
 
 #goal of this node: take a picture with the real sense according to a service call (?) 
 #do processing on the image--use the depth cloud points to remove background objects 
@@ -34,19 +35,36 @@ class picture_node(Node):
         # self._inplane = self.create_publisher(PointCloud2, "pcl_inplane", 10)
 
     def image_callback(self,msg): 
-        self.get_logger().info("Receiving image") 
         self.last_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8') 
-
 
     def save_image_callback(self, request, response):
         if self.last_image is not None:
             cv2.imwrite('saved_image.png', self.last_image)
             response.success = True
             response.message = "image saved successfully."
+            self.get_waypoints()
         else:
             response.success = False
             response.message = "no image to save."
         return response
+    
+    def get_waypoints(self): 
+        edges, points = edge_map(image=self.last_image)
+        x_range = (0.35, 0.75)
+        y_range = (-0.25, 0.25)
+        mapped_points = map_points_to_range(points, x_range, y_range) 
+        x_mapped = [point[0] for point in mapped_points]
+        y_mapped = [point[1] for point in mapped_points]
+
+        #comment this out later, just for visualizing
+        plt.figure(figsize=(8, 6))
+        plt.scatter(x_mapped, y_mapped, c='blue', label='Mapped Points')
+        plt.title('2D Plot of Mapped Points')
+        plt.xlabel('X Axis')
+        plt.ylabel('Y Axis')
+        plt.grid(True)
+        plt.legend()
+        plt.show() 
 
     # def pcl_handler(self, pcl_msg: PointCloud2):
     #     # Convert ROS2 message to a PointCloud used by PCL
