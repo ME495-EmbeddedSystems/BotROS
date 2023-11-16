@@ -31,27 +31,6 @@ class ImageListener(Node):
         pass
     
     def colordetenction(self,image):
-        cv2.namedWindow('trackbar',cv2.WINDOW_NORMAL)
-        cv2.createTrackbar('LowH_blue','trackbar',0,179,self.nothing)
-        cv2.createTrackbar('HighH_blue','trackbar',0,179,self.nothing)
-        cv2.createTrackbar('LowS_blue','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('HighS_blue','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('LowV_blue','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('HighV_blue','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('LowH_red','trackbar',0,179,self.nothing)
-        cv2.createTrackbar('HighH_red','trackbar',0,179,self.nothing)
-        cv2.createTrackbar('LowS_red','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('HighS_red','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('LowV_red','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('HighV_red','trackbar',0,255,self.nothing)
-
-        cv2.createTrackbar('LowH_green','trackbar',0,179,self.nothing)
-        cv2.createTrackbar('HighH_green','trackbar',0,179,self.nothing)
-        cv2.createTrackbar('LowS_green','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('HighS_green','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('LowV_green','trackbar',0,255,self.nothing)
-        cv2.createTrackbar('HighV_green','trackbar',0,255,self.nothing)
-        
         hsv=cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         # lower_blue = np.array([cv2.getTrackbarPos('LowH_blue','trackbar'),cv2.getTrackbarPos('LowS_blue','trackbar'),cv2.getTrackbarPos('LowV_blue','trackbar')])
         # upper_blue = np.array([cv2.getTrackbarPos('HighH_blue','trackbar'),cv2.getTrackbarPos('HighS_blue','trackbar'),cv2.getTrackbarPos('HighV_blue','trackbar')])
@@ -145,6 +124,27 @@ class ImageListener(Node):
             
         conto=cv2.drawContours(image, contours, -1, (0,255,0), 3)
         
+        cv2.namedWindow('trackbar',cv2.WINDOW_NORMAL)
+        cv2.createTrackbar('LowH_blue','trackbar',0,179,self.nothing)
+        cv2.createTrackbar('HighH_blue','trackbar',0,179,self.nothing)
+        cv2.createTrackbar('LowS_blue','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('HighS_blue','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('LowV_blue','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('HighV_blue','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('LowH_red','trackbar',0,179,self.nothing)
+        cv2.createTrackbar('HighH_red','trackbar',0,179,self.nothing)
+        cv2.createTrackbar('LowS_red','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('HighS_red','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('LowV_red','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('HighV_red','trackbar',0,255,self.nothing)
+
+        cv2.createTrackbar('LowH_green','trackbar',0,179,self.nothing)
+        cv2.createTrackbar('HighH_green','trackbar',0,179,self.nothing)
+        cv2.createTrackbar('LowS_green','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('HighS_green','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('LowV_green','trackbar',0,255,self.nothing)
+        cv2.createTrackbar('HighV_green','trackbar',0,255,self.nothing)
+        
         cv2.imshow('Thresh',conto)
 
 
@@ -156,6 +156,7 @@ class ImageListener(Node):
 
         cv2.namedWindow('green', cv2.WINDOW_NORMAL)
         cv2.imshow('green',img_close_green)
+        cv2.waitKey(1)
         self.get_logger().info(f"finish? {cx_blue, cx_green, cx_red}")
     
     def timer_callback(self):
