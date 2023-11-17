@@ -70,36 +70,43 @@ class ILikeToMoveItMoveIt(Node):
 
         self.waypoints = coordinate_list
 
-        # paint location
-        self.z_standoff = 0.25
-        self.z_dot = 0.19
+        #varibles for z
+        self.z_brush_standoff = 0.25
+        self.z_paint_standoff = 0.4
+        self.z_brush_dot = 0.19
+        self.z_paint_dip = 0.25
+        self.z_brush_dip = 0.18
+        self.z_dot_standoff = 0.25
+        
+        # paint standoff location
         self.paint_location_standoff = Pose()
         self.paint_location_standoff.position.x = 0.40275
         self.paint_location_standoff.position.y = 0.43162
-        self.paint_location_standoff.position.z = self.z_standoff
+        self.paint_location_standoff.position.z = self.z_paint_standoff
         self.paint_location_standoff.orientation = self.orientation
         
+        # paint dip location
         self.paint_location_dip = Pose()
         self.paint_location_dip.position.x = 0.40275
         self.paint_location_dip.position.y = 0.43162
         # NOTE: we were subtracting 0.05 from the z value and keeping max_step = 0.1 and it was working but once we just decreased max_step, it also worked??
-        self.paint_location_dip.position.z = self.z_dot
+        self.paint_location_dip.position.z = self.z_paint_dip
         self.paint_location_dip.orientation = self.orientation
 
         # paintbrush location
-        # standoff pose
+        # brush standoff pose
         self.pickup_loc = Pose()
-        # this is the position of the paint pallete 
-        self.pickup_loc.position.x = 0.44337
+        self.pickup_loc.position.x = 0.43337
         self.pickup_loc.position.y = 0.244664
-        self.pickup_loc.position.z = self.z_standoff
+        self.pickup_loc.position.z = self.z_brush_standoff
         self.pickup_loc.orientation = self.orientation
 
-        # this is the robot going to fetch paint
+
+        #brush pickup location
         self.pickup_dip = Pose()
         self.pickup_dip.position.x = self.pickup_loc.position.x
         self.pickup_dip.position.y = self.pickup_loc.position.y
-        self.pickup_dip.position.z = 0.18
+        self.pickup_dip.position.z = self.z_brush_dip
         self.pickup_dip.orientation = self.orientation
 
         self.pick_msg_wpts = []
@@ -136,7 +143,7 @@ class ILikeToMoveItMoveIt(Node):
 
         elif self.state == State.PICKBRUSH:
             # this is the position of the paint brush
-            self.pickup = [0.44337, 0.244664, 0.25]
+            self.pickup = [self.pickup_loc.position.x, self.pickup_loc.position.y, self.pickup_loc.position.z]
             self.KingJulien.plan_path_to_position_orientation(self.pickup, self.orientation)
             self.state = State.UP
 
@@ -156,13 +163,13 @@ class ILikeToMoveItMoveIt(Node):
             standoff = Pose()
             standoff.position.x = self.waypoints[0][0]
             standoff.position.y = self.waypoints[0][1]
-            standoff.position.z = self.z_standoff
+            standoff.position.z = self.z_dot_standoff
             standoff.orientation = self.orientation
 
             dot_pos = Pose()
             dot_pos.position.x = standoff.position.x
             dot_pos.position.y = standoff.position.y
-            dot_pos.position.z = self.z_dot
+            dot_pos.position.z = self.z_brush_dot
             dot_pos.orientation = self.orientation
 
             msg_waypoints.append(standoff)
