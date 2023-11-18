@@ -30,7 +30,7 @@ def edge_map(image):
 
     # find contours of edges
     contours, hierarchy = cv2.findContours(
-        edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
     # iterate over contours and draw circles at each point
     total_points = []
@@ -41,7 +41,7 @@ def edge_map(image):
             x, y = contours[i][j][0]
             points.append((x, y))
 
-        step = 1  # how many points to skip
+        step = 8  # how many points to skip
         points_in_contour = points[0:len(points):step]
         
         # draw circles at each point in outline
@@ -97,8 +97,8 @@ def map_points_to_range(points, x_range, y_range):
     new_points = []
     for x, y in points:
         x_new = (x - min_x) * scale_x + x_range[0] #scale the x coord and shift it to the correct range
-        # y_new = (max_y - y) * scale_y + y_range[0] #USE THIS TO FLIP UPSIDE DOWN
-        y_new = (y - min_y) * scale_y + y_range[0] #scale the y coord and shift it to the correct range 
+        y_new = (max_y - y) * scale_y + y_range[0] #USE THIS TO FLIP UPSIDE DOWN
+        # y_new = (y - min_y) * scale_y + y_range[0] #scale the y coord and shift it to the correct range 
 
         new_points.append((x_new, y_new))
     
@@ -110,13 +110,20 @@ def save_to_csv(waypoints_list, filename):
 
 
 def main():
-    edges, points = edge_map('nader_pic.jpg')
-    x_range = (0.35, 0.75)
-    y_range = (-0.25, 0.25)
+    edges, points = edge_map('download.png')
+
+    # x_range = (-.1954, 0.45697)
+    # y_range = (.35247, .75931)
+
+    x_range = (-.1954, 0.45697)
+    y_range = (.4, .75931)
+
     mapped_points = map_points_to_range(points, x_range, y_range) 
 
     x_mapped = [point[0] for point in mapped_points]
     y_mapped = [point[1] for point in mapped_points]
+
+    print("ASDAS",len(x_mapped))
 
     plt.figure(figsize=(8, 6))
     plt.scatter(x_mapped, y_mapped, c='blue', label='Mapped Points')
@@ -127,7 +134,7 @@ def main():
     plt.legend()
     plt.show()
 
-    save_to_csv(mapped_points, "picture_points.csv")
+    save_to_csv(mapped_points, "N_points.csv")
 
 
 
