@@ -68,8 +68,8 @@ def simple_circle():
     # x_range = (0.35, 0.85)
     # y_range = (-0.25, 0.25)
 
-    x_range = (-0.315, .403)
-    y_range = (.34, .67)
+    x_range = ( -0.1954, 0.45697)
+    y_range = (0.35247, 0.75931)
 
     points = []
     for i in range(0, 360, 15):
@@ -139,7 +139,7 @@ def main():
     # save_to_csv(mapped_points, "picture_points.csv")
 
     points = simple_circle()
-    save_to_csv(points, "fiona.csv")
+    save_to_csv(points, "nader.csv")
     # show points
     plt.figure(figsize=(8, 6))
     plt.scatter(*zip(*points), c='blue', label='Mapped Points')
