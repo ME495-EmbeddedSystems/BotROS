@@ -49,12 +49,22 @@ class ImageListener(Node):
         """Callback function for the camera image subscriber."""
         self.last_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8') 
         
-    def nothing(self):
+    # def click_event(self,event, x, y, flags, params): 
+    #     # checking for left mouse clicks 
+    #     if event == cv2.EVENT_LBUTTONDOWN: 
+    
+    #         # displaying the coordinates 
+    #         # on the Shell 
+    #         print(x, ' ', y)
+    #         self.get_logger().info(f"finish? {x, y}")
+    
+    def nothing(self,x):
         pass
     
     def colordetenction(self,image):
         mask = np.zeros(image.shape[:2], dtype="uint8")
-        cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
+        cv2.rectangle(mask, (698, 243), (855, 407), 255, -1)
+        # cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
         
         masked = cv2.bitwise_and(image, image, mask=mask)
         hsv=cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
@@ -150,9 +160,10 @@ class ImageListener(Node):
             
         conto=cv2.drawContours(masked, contours, -1, (0,255,0), 3)
         
+        
         cv2.imshow('Thresh',conto)
-
-
+        # cv2.setMouseCallback('Thresh', self.click_event) 
+        
         cv2.namedWindow('BLUE', cv2.WINDOW_NORMAL)
         cv2.imshow('BLUE',img_close_blue)
 
@@ -161,8 +172,9 @@ class ImageListener(Node):
 
         cv2.namedWindow('green', cv2.WINDOW_NORMAL)
         cv2.imshow('green',img_close_green)
+ 
         cv2.waitKey(1)
-        self.get_logger().info(f"finish? {cx_blue, cx_green, cx_red}")
+        # self.get_logger().info(f"finish? {cx_blue, cx_green, cx_red}")
     
     def timer_callback(self):
         if self.last_image is not None:
