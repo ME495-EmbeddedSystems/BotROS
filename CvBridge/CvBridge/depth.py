@@ -23,14 +23,6 @@ class ImageListener(Node):
         self.timer = self.create_timer(1/100, self.timer_callback)
         self.last_image = None
         
-    def camera_rgb_callback(self,msg): 
-        """Callback function for the camera image subscriber."""
-        self.last_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8') 
-        
-    def nothing(self):
-        pass
-    
-    def colordetenction(self,image):
         cv2.namedWindow('trackbar',cv2.WINDOW_NORMAL)
         cv2.createTrackbar('LowH_blue','trackbar',0,179,self.nothing)
         cv2.createTrackbar('HighH_blue','trackbar',0,179,self.nothing)
@@ -53,26 +45,38 @@ class ImageListener(Node):
         cv2.createTrackbar('HighV_green','trackbar',0,255,self.nothing)
         
         
-        hsv=cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        # lower_blue = np.array([cv2.getTrackbarPos('LowH_blue','trackbar'),cv2.getTrackbarPos('LowS_blue','trackbar'),cv2.getTrackbarPos('LowV_blue','trackbar')])
-        # upper_blue = np.array([cv2.getTrackbarPos('HighH_blue','trackbar'),cv2.getTrackbarPos('HighS_blue','trackbar'),cv2.getTrackbarPos('HighV_blue','trackbar')])
+    def camera_rgb_callback(self,msg): 
+        """Callback function for the camera image subscriber."""
+        self.last_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8') 
+        
+    def nothing(self):
+        pass
+    
+    def colordetenction(self,image):
+        mask = np.zeros(image.shape[:2], dtype="uint8")
+        cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
+        
+        masked = cv2.bitwise_and(image, image, mask=mask)
+        hsv=cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
+        lower_blue = np.array([cv2.getTrackbarPos('LowH_blue','trackbar'),cv2.getTrackbarPos('LowS_blue','trackbar'),cv2.getTrackbarPos('LowV_blue','trackbar')])
+        upper_blue = np.array([cv2.getTrackbarPos('HighH_blue','trackbar'),cv2.getTrackbarPos('HighS_blue','trackbar'),cv2.getTrackbarPos('HighV_blue','trackbar')])
 
-        lower_blue = np.array([94, 80, 2], np.uint8) 
-        upper_blue = np.array([120, 255, 255], np.uint8) 
+        # lower_blue = np.array([94, 80, 2], np.uint8) 
+        # upper_blue = np.array([120, 255, 255], np.uint8) 
         blue_mask= cv2.inRange(hsv, lower_blue, upper_blue)
         
-        # lower_red = np.array([cv2.getTrackbarPos('LowH_red','trackbar'),cv2.getTrackbarPos('LowS_red','trackbar'),cv2.getTrackbarPos('LowV_red','trackbar')])
-        # upper_red = np.array([cv2.getTrackbarPos('HighH_red','trackbar'),cv2.getTrackbarPos('HighS_red','trackbar'),cv2.getTrackbarPos('HighV_red','trackbar')])
+        lower_red = np.array([cv2.getTrackbarPos('LowH_red','trackbar'),cv2.getTrackbarPos('LowS_red','trackbar'),cv2.getTrackbarPos('LowV_red','trackbar')])
+        upper_red = np.array([cv2.getTrackbarPos('HighH_red','trackbar'),cv2.getTrackbarPos('HighS_red','trackbar'),cv2.getTrackbarPos('HighV_red','trackbar')])
 
-        lower_red = np.array([136, 87, 111], np.uint8)
-        upper_red = np.array([180, 255, 255], np.uint8) 
+        # lower_red = np.array([136, 87, 111], np.uint8)
+        # upper_red = np.array([180, 255, 255], np.uint8) 
         red_mask= cv2.inRange(hsv, lower_red, upper_red)
         
-        # lower_green = np.array([cv2.getTrackbarPos('LowH_green','trackbar'),cv2.getTrackbarPos('LowS_green','trackbar'),cv2.getTrackbarPos('LowV_green','trackbar')])
-        # upper_green = np.array([cv2.getTrackbarPos('HighH_green','trackbar'),cv2.getTrackbarPos('HighS_green','trackbar'),cv2.getTrackbarPos('HighV_green','trackbar')])
+        lower_green = np.array([cv2.getTrackbarPos('LowH_green','trackbar'),cv2.getTrackbarPos('LowS_green','trackbar'),cv2.getTrackbarPos('LowV_green','trackbar')])
+        upper_green = np.array([cv2.getTrackbarPos('HighH_green','trackbar'),cv2.getTrackbarPos('HighS_green','trackbar'),cv2.getTrackbarPos('HighV_green','trackbar')])
 
-        lower_green = np.array([25, 52, 72], np.uint8) 
-        upper_green = np.array([102, 255, 255], np.uint8) 
+        # lower_green = np.array([25, 52, 72], np.uint8) 
+        # upper_green = np.array([102, 255, 255], np.uint8) 
         green_mask= cv2.inRange(hsv, lower_green, upper_green)
         
         kernel_size=(5,5)
@@ -87,9 +91,9 @@ class ImageListener(Node):
         img_close_green=cv2.morphologyEx(img_open2, cv2.MORPH_CLOSE, kernelc)
 
         
-        res_blue= cv2.bitwise_and(image, image, mask=img_close_blue)
-        res_red= cv2.bitwise_and(image, image, mask=img_close_red)
-        res_green= cv2.bitwise_and(image, image, mask=img_close_green)
+        res_blue= cv2.bitwise_and(masked, masked, mask=img_close_blue)
+        res_red= cv2.bitwise_and(masked, masked, mask=img_close_red)
+        res_green= cv2.bitwise_and(masked, masked, mask=img_close_green)
         contours, hierarchy=cv2.findContours(img_close_blue, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         #print(len(contours))
         cx_blue=0
@@ -105,8 +109,8 @@ class ImageListener(Node):
             cx_blue= int(M['m10']/M['m00'])
             cy_blue= int(M['m01']/M['m00'])
 
-            cv2.circle(image, (cx_blue, cy_blue), 3, (255,255,255), -1)
-            cv2.putText(image, 'blue_centroid', (cx_blue-10,cy_blue-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.circle(masked, (cx_blue, cy_blue), 3, (255,255,255), -1)
+            cv2.putText(masked, 'blue_centroid', (cx_blue-10,cy_blue-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
         
         contours, hierarchy=cv2.findContours(img_close_red, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         #print(len(contours))
@@ -123,8 +127,8 @@ class ImageListener(Node):
             cx_red= int(M['m10']/M['m00'])
             cy_red= int(M['m01']/M['m00'])
 
-            cv2.circle(image, (cx_red, cy_red), 3, (255,255,255), -1)
-            cv2.putText(image, 'red_centroid', (cx_red-10,cy_red-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.circle(masked, (cx_red, cy_red), 3, (255,255,255), -1)
+            cv2.putText(masked, 'red_centroid', (cx_red-10,cy_red-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
             
         contours, hierarchy=cv2.findContours(img_close_green, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         #print(len(contours))
@@ -141,10 +145,10 @@ class ImageListener(Node):
             cx_green= int(M['m10']/M['m00'])
             cy_green= int(M['m01']/M['m00'])
             
-            cv2.circle(image, (cx_green, cy_green), 3, (255,255,255), -1)
-            cv2.putText(image, 'green_centroid', (cx_green-10,cy_green-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.circle(masked, (cx_green, cy_green), 3, (255,255,255), -1)
+            cv2.putText(masked, 'green_centroid', (cx_green-10,cy_green-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
             
-        conto=cv2.drawContours(image, contours, -1, (0,255,0), 3)
+        conto=cv2.drawContours(masked, contours, -1, (0,255,0), 3)
         
         cv2.imshow('Thresh',conto)
 
