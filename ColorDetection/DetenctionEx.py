@@ -102,7 +102,14 @@ try:
         depth_image = np.asanyarray(aligned_depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
         color_image1 = np.asanyarray(color_frame1.get_data())
-        hsv=cv2.cvtColor(color_image1, cv2.COLOR_BGR2HSV)
+        
+        mask = np.zeros(color_image1.shape[:2], dtype="uint8")
+        cv2.rectangle(mask, (0, 90), (290, 450), 255, -1)
+        
+        masked = cv2.bitwise_and(color_image1, color_image1, mask=mask)
+        
+        hsv=cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
+
         #print(hsv)
         lower_blue = np.array([cv2.getTrackbarPos('LowH_blue','trackbar'),cv2.getTrackbarPos('LowS_blue','trackbar'),cv2.getTrackbarPos('LowV_blue','trackbar')])
         upper_blue = np.array([cv2.getTrackbarPos('HighH_blue','trackbar'),cv2.getTrackbarPos('HighS_blue','trackbar'),cv2.getTrackbarPos('HighV_blue','trackbar')])
@@ -133,9 +140,9 @@ try:
         img_close_green=cv2.morphologyEx(img_open2, cv2.MORPH_CLOSE, kernelc)
 
         
-        res_blue= cv2.bitwise_and(color_image1, color_image1, mask=img_close_blue)
-        res_red= cv2.bitwise_and(color_image1, color_image1, mask=img_close_red)
-        res_green= cv2.bitwise_and(color_image1, color_image1, mask=img_close_green)
+        res_blue= cv2.bitwise_and(masked, masked, mask=img_close_blue)
+        res_red= cv2.bitwise_and(masked, masked, mask=img_close_red)
+        res_green= cv2.bitwise_and(masked, masked, mask=img_close_green)
         contours, hierarchy=cv2.findContours(img_close_blue, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         #print(len(contours))
         cx_blue=0
@@ -151,8 +158,8 @@ try:
             cx_blue= int(M['m10']/M['m00'])
             cy_blue= int(M['m01']/M['m00'])
 
-            cv2.circle(color_image1, (cx_blue, cy_blue), 3, (255,255,255), -1)
-            cv2.putText(color_image1, 'blue_centroid', (cx_blue-10,cy_blue-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.circle(masked, (cx_blue, cy_blue), 3, (255,255,255), -1)
+            cv2.putText(masked, 'blue_centroid', (cx_blue-10,cy_blue-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
         
         contours, hierarchy=cv2.findContours(img_close_red, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         #print(len(contours))
@@ -169,8 +176,8 @@ try:
             cx_red= int(M['m10']/M['m00'])
             cy_red= int(M['m01']/M['m00'])
 
-            cv2.circle(color_image1, (cx_red, cy_red), 3, (255,255,255), -1)
-            cv2.putText(color_image1, 'red_centroid', (cx_red-10,cy_red-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.circle(masked, (cx_red, cy_red), 3, (255,255,255), -1)
+            cv2.putText(masked, 'red_centroid', (cx_red-10,cy_red-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
             
         contours, hierarchy=cv2.findContours(img_close_green, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         #print(len(contours))
@@ -187,10 +194,10 @@ try:
             cx_green= int(M['m10']/M['m00'])
             cy_green= int(M['m01']/M['m00'])
 
-            cv2.circle(color_image1, (cx_green, cy_green), 3, (255,255,255), -1)
-            cv2.putText(color_image1, 'green_centroid', (cx_green-10,cy_green-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.circle(masked, (cx_green, cy_green), 3, (255,255,255), -1)
+            cv2.putText(masked, 'green_centroid', (cx_green-10,cy_green-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
             
-        conto=cv2.drawContours(color_image1, contours, -1, (0,255,0), 3)
+        conto=cv2.drawContours(masked, contours, -1, (0,255,0), 3)
         # depth=aligned_depth_frame.get_distance(cx,cy)
         # cfg=profile.get_stream(rs.stream.color)
         # intr=cfg.as_video_stream_profile().get_intrinsics()
