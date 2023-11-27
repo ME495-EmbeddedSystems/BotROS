@@ -122,18 +122,16 @@ def main():
     # x_range = (-.1954, 0.45697)
     # y_range = (.35247, .75931)
 
-    x_range = (-.1954, 0.45697)
-    y_range = (.4, .75931)
+    x_range = (0.00323, 0.39297)
+    y_range = (.3760, .7297)
 
     mapped_points = map_points_to_range(points, x_range, y_range) 
 
     # x_mapped = [point[0] for point in mapped_points]
     # y_mapped = [point[1] for point in mapped_points]
 
-    print("ASDAS",len(x_mapped))
-
     plt.figure(figsize=(8, 6))
-    plt.scatter(*zip(*points), c='blue', label='Mapped Points')
+    plt.scatter(*zip(*mapped_points), c='blue', label='Mapped Points')
     plt.title('2D Plot of Mapped Points')
     plt.xlabel('X Axis')
     plt.ylabel('Y Axis')
