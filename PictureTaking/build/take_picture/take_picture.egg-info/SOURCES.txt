@@ -1,0 +1,16 @@
+package.xml
+setup.cfg
+setup.py
+config/pcl.rviz
+launch/take_picture.launch.xml
+resource/take_picture
+take_picture/__init__.py
+take_picture/edge_map.py
+take_picture/picture_node.py
+take_picture.egg-info/PKG-INFO
+take_picture.egg-info/SOURCES.txt
+take_picture.egg-info/dependency_links.txt
+take_picture.egg-info/entry_points.txt
+take_picture.egg-info/requires.txt
+take_picture.egg-info/top_level.txt
+take_picture.egg-info/zip-safe

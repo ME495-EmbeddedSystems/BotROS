@@ -1,0 +1,8 @@
+msg/Waypoint.idl
+msg/Waypoint.msg
+msg/WaypointList.idl
+msg/WaypointList.msg
+srv/GetWaypoints.idl
+srv/GetWaypoints.srv
+srv/GetWaypoints_Request.msg
+srv/GetWaypoints_Response.msg

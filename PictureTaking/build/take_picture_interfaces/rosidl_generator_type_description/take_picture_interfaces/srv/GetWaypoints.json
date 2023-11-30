@@ -1,0 +1,250 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "take_picture_interfaces/srv/GetWaypoints",
+      "fields": [
+        {
+          "name": "request_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "take_picture_interfaces/srv/GetWaypoints_Request"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "response_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "take_picture_interfaces/srv/GetWaypoints_Response"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "event_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "take_picture_interfaces/srv/GetWaypoints_Event"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "builtin_interfaces/msg/Time",
+        "fields": [
+          {
+            "name": "sec",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "nanosec",
+            "type": {
+              "type_id": 7,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "service_msgs/msg/ServiceEventInfo",
+        "fields": [
+          {
+            "name": "event_type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "stamp",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Time"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "client_gid",
+            "type": {
+              "type_id": 51,
+              "capacity": 16,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "sequence_number",
+            "type": {
+              "type_id": 8,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "take_picture_interfaces/msg/Waypoint",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "take_picture_interfaces/msg/WaypointList",
+        "fields": [
+          {
+            "name": "waypoints",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "take_picture_interfaces/msg/Waypoint"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "take_picture_interfaces/srv/GetWaypoints_Event",
+        "fields": [
+          {
+            "name": "info",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "service_msgs/msg/ServiceEventInfo"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "request",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "take_picture_interfaces/srv/GetWaypoints_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "take_picture_interfaces/srv/GetWaypoints_Response"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "take_picture_interfaces/srv/GetWaypoints_Request",
+        "fields": [
+          {
+            "name": "structure_needs_at_least_one_member",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "take_picture_interfaces/srv/GetWaypoints_Response",
+        "fields": [
+          {
+            "name": "waypoints",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "take_picture_interfaces/msg/WaypointList"
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "take_picture_interfaces/srv/GetWaypoints",
+      "hash_string": "RIHS01_2b670ec124ff5c94bb5920c35f93d6895cae038f4ac58b1616f1fee18004e444"
+    },
+    {
+      "type_name": "builtin_interfaces/msg/Time",
+      "hash_string": "RIHS01_b106235e25a4c5ed35098aa0a61a3ee9c9b18d197f398b0e4206cea9acf9c197"
+    },
+    {
+      "type_name": "service_msgs/msg/ServiceEventInfo",
+      "hash_string": "RIHS01_41bcbbe07a75c9b52bc96bfd5c24d7f0fc0a08c0cb7921b3373c5732345a6f45"
+    },
+    {
+      "type_name": "take_picture_interfaces/msg/Waypoint",
+      "hash_string": "RIHS01_5a160b0006adb36000a80d861d6d1b9e313b264cfe4f3d64733c54064c94b93b"
+    },
+    {
+      "type_name": "take_picture_interfaces/msg/WaypointList",
+      "hash_string": "RIHS01_23c9efe392464be800944a205143a843d9b0dbde84f7009f0124193e96583c1f"
+    },
+    {
+      "type_name": "take_picture_interfaces/srv/GetWaypoints_Event",
+      "hash_string": "RIHS01_fd7f7158e77b0518104340b81ef59b92c41fe550ab52b29c2048dfe89d609494"
+    },
+    {
+      "type_name": "take_picture_interfaces/srv/GetWaypoints_Request",
+      "hash_string": "RIHS01_24b50147b5d357faee5a17c93a50f0d87fe22eddd739ffb4c1fe020561fdd966"
+    },
+    {
+      "type_name": "take_picture_interfaces/srv/GetWaypoints_Response",
+      "hash_string": "RIHS01_0d09e616def4c59857900cda846253adb540d7bcfe3cbfb1d32f0f729f78c001"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from take_picture_interfaces/srv/GetWaypoints.srv
+// generated code does not contain a copyright notice
+
+#include "take_picture_interfaces/msg/WaypointList.idl"
+
+module take_picture_interfaces {
+  module srv {
+    struct GetWaypoints_Request {
+      uint8 structure_needs_at_least_one_member;
+    };
+    struct GetWaypoints_Response {
+      sequence<take_picture_interfaces::msg::WaypointList> waypoints;
+    };
+  };
+};

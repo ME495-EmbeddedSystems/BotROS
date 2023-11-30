@@ -1,0 +1,13 @@
+{
+  "package_name": "take_picture_interfaces",
+  "output_dir": "/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/build/take_picture_interfaces/rosidl_generator_type_description/take_picture_interfaces",
+  "idl_tuples": [
+    "/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/build/take_picture_interfaces/rosidl_adapter/take_picture_interfaces:msg/Waypoint.idl",
+    "/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/build/take_picture_interfaces/rosidl_adapter/take_picture_interfaces:msg/WaypointList.idl",
+    "/home/naderahmed/ws/watermelon/final-project-Group5/PictureTaking/build/take_picture_interfaces/rosidl_adapter/take_picture_interfaces:srv/GetWaypoints.idl"
+  ],
+  "include_paths": [
+    "service_msgs:/opt/ros/iron/share/service_msgs",
+    "builtin_interfaces:/opt/ros/iron/share/builtin_interfaces"
+  ]
+}
