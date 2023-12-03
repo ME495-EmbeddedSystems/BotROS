@@ -167,8 +167,8 @@ def make_college_logo(img_filename, json_filename, skip_points, range, scales, b
     print("Number of points: ", len(mapped_points))
 
     points_dict = {} 
-    points_dict[fill_color] = inner_points
     points_dict[border_color] = border_points
+    points_dict[fill_color] = inner_points
 
     fig, ax = plt.subplots(figsize=(8, 6))
     plt.xlim(x_range)
