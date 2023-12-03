@@ -126,6 +126,7 @@ def create_hexagon(center, diameter):
 
 def generate_circle_jsons(range):
     
+    #FIX FILL AND BORDER COLORq
     points = simple_circle(range) 
     circle_points_alternating = {fill_color: [], border_color: []}
     for i, point in enumerate(points):
@@ -208,57 +209,55 @@ def main():
     #     x_range = (-0.2538, 0.1996)
     # y_range = (0.4788, 0.73217)
     
-
     
-    
-    make_college_logo(img_filename="notre_dame_2.png", 
+    make_college_logo(img_filename="notre_dame.png", 
                      json_filename="notre_dame.json", 
-                     skip_points=25,
+                     skip_points=30,
                      range=notre_dame_range,
                      scales=(0.65, 0.65),
                      border_color="yellow",
                      fill_color="blue")
     
-    make_college_logo(img_filename="knoxville.png", 
-                     json_filename="knoxville.json", 
-                     skip_points=100,
-                     range=knoxville_range,
-                     scales=(0.6, 0.6),
-                     border_color="orange",
-                     fill_color="orange")
+    # make_college_logo(img_filename="knoxville.png", 
+    #                  json_filename="knoxville.json", 
+    #                  skip_points=100,
+    #                  range=knoxville_range,
+    #                  scales=(0.6, 0.6),
+    #                  border_color="orange",
+    #                  fill_color="orange")
     
 
-    make_college_logo(img_filename="maryland.png", 
-                     json_filename="maryland.json", 
-                     skip_points=50,
-                     range=notre_dame_range,
-                     scales=(0.6, 0.5),
-                     border_color="yellow",
-                     fill_color="red")
+    # make_college_logo(img_filename="maryland.png", 
+    #                  json_filename="maryland.json", 
+    #                  skip_points=50,
+    #                  range=notre_dame_range,
+    #                  scales=(0.6, 0.5),
+    #                  border_color="yellow",
+    #                  fill_color="red")
     
-    make_college_logo(img_filename="S.png", 
-                        json_filename="swarthmore.json", 
-                        skip_points=20,
-                        range=knoxville_range,
-                        scales=(0.3, 0.3),
-                        border_color="orange",
-                        fill_color="red")
+    # make_college_logo(img_filename="S.png", 
+    #                     json_filename="swarthmore.json", 
+    #                     skip_points=20,
+    #                     range=knoxville_range,
+    #                     scales=(0.3, 0.3),
+    #                     border_color="orange",
+    #                     fill_color="red")
     
-    make_college_logo(img_filename="gtech.png", 
-                    json_filename="gtech_yellow.json", 
-                    skip_points=13,
-                    range=notre_dame_range,
-                    scales=(0.6, 0.6),
-                    border_color="blue",
-                    fill_color="yellow")
+    # make_college_logo(img_filename="gtech.png", 
+    #                 json_filename="gtech_yellow.json", 
+    #                 skip_points=13,
+    #                 range=notre_dame_range,
+    #                 scales=(0.6, 0.6),
+    #                 border_color="blue",
+    #                 fill_color="yellow")
     
-    make_college_logo(img_filename="gtech.png", 
-                    json_filename="gtech_blue.json", 
-                    skip_points=13,
-                    range=notre_dame_range,
-                    scales=(0.6, 0.6),
-                    border_color="yellow",
-                    fill_color="blue")
+    # make_college_logo(img_filename="gtech.png", 
+    #                 json_filename="gtech_blue.json", 
+    #                 skip_points=13,
+    #                 range=notre_dame_range,
+    #                 scales=(0.6, 0.6),
+    #                 border_color="yellow",
+    #                 fill_color="blue")
 
 
 
