@@ -202,17 +202,18 @@ def main():
     knoxville_range = ((-0.2538, 0.0), 
                        (0.4788, 0.73217))
     
-    notre_dame_range = ((-0.2538, 0.17),
+    notre_dame_range = ((-0.2538, 0.0),
                         (0.4788, 0.73217))
     
+    #     x_range = (-0.2538, 0.1996)
+    # y_range = (0.4788, 0.73217)
     
-    maryland_range = ((-0.2538, 0.17),
-                      (0.4788, 0.73217))
+
     
     
     make_college_logo(img_filename="notre_dame_2.png", 
                      json_filename="notre_dame.json", 
-                     skip_points=20,
+                     skip_points=25,
                      range=notre_dame_range,
                      scales=(0.65, 0.65),
                      border_color="yellow",
@@ -230,7 +231,7 @@ def main():
     make_college_logo(img_filename="maryland.png", 
                      json_filename="maryland.json", 
                      skip_points=50,
-                     range=maryland_range,
+                     range=notre_dame_range,
                      scales=(0.6, 0.5),
                      border_color="yellow",
                      fill_color="red")
