@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     maintainer='sdalal',
     maintainer_email='shaildalal2024@u.northwestern.edu',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Package uses color detection to differentiate between different colors',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

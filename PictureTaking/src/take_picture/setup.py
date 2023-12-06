@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'listen_apriltags'
+package_name = 'take_picture'
 
 setup(
     name=package_name,
@@ -10,20 +10,19 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml',
-                                   'launch/aprilTags.launch.xml',
-                                   'config/tags.yaml',
-                                   'config/rviz_config.rviz']),
+                                   'launch/take_picture.launch.xml',
+                                   'config/pcl.rviz']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='csmith',
-    maintainer_email='courtney77smith77@gmail.com',
-    description='creates transforms using apriltags',
-    license='MIT',
+    maintainer='naderahmed',
+    maintainer_email='naderahmed2024@u.northwestern.edu',
+    description='TODO: Package description',
+    license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'listener = listen_apriltags.listening:main'
+            'picture_node = take_picture.picture_node:main'
         ],
     },
 )

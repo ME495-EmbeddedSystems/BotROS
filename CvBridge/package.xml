@@ -3,9 +3,9 @@
 <package format="3">
   <name>CvBridge</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Package uses color detection to differentiate between different colors</description>
   <maintainer email="shaildalal2024@u.northwestern.edu">sdalal</maintainer>
-  <license>TODO: License declaration</license>
+  <license>MIT</license>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
