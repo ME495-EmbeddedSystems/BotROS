@@ -50,9 +50,7 @@ The aim of this project was to paint dot an image using the Emika Franka Panda 7
 
 `picture_node` - 
 
-`ImageListener` -
-
-`Depth` - 
+`Depth` - The Depth uses Computer vision to find the location of palette and perform a color detection on the paint present inside it. The file is configured for red, blue, green, orange, purple and yellow color. The depth node publishes a transform between the robot's base link and the paint location. 
 
 ### Custom Messages
 
