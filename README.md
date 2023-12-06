@@ -63,6 +63,8 @@ The aim of this project was to paint dot an image using the Emika Franka Panda 7
 
 ### Algorithms Used
 
+`canny edge detection` - 
+
 ### Futurue Work
 - use cv for the robot to detect when it needs to refill on paint
 - increase the workspace of the robot by experimenting with different psoitions of the canvas
