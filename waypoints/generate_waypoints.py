@@ -166,6 +166,7 @@ def generate_circle_jsons(range, fill_color="purple", border_color="yellow"):
     """
 
     points = simple_circle(range)
+    # Make alternating points purple and yellow
     circle_points_alternating = {fill_color: [], border_color: []}
     for i, point in enumerate(points):
         if i % 2 == 0:
