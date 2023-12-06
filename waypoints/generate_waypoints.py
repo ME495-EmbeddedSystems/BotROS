@@ -1,16 +1,8 @@
-# import opencv2 python
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import json
-import random
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
-# SHAIL: 0.6, 0.5
-
-# This function generates edge map for a given image.
-
 
 def edge_map(image, skip_points, scales):
     """
@@ -38,20 +30,15 @@ def edge_map(image, skip_points, scales):
     # kernel = np.ones((4, 4), np.uint8)
     # edges = cv2.dilate(edges, kernel, iterations=1)
 
-    # invert the image
     edges = cv2.bitwise_not(edges)
 
-    # create black image to draw points on
     canvas = np.zeros_like(img)
 
-    # find contours of edges
     contours, hierarchy = cv2.findContours(
         edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
-    # iterate over contours and draw circles at each point
     total_points = []
     for i in range(len(contours)):
-        # reshape contour into list of points
         points = []
         for j in range(len(contours[i])):
             x, y = contours[i][j][0]
@@ -59,7 +46,6 @@ def edge_map(image, skip_points, scales):
 
         points_in_contour = points[0:len(points):skip_points]
 
-        # draw circles at each point in outline
         marker_size = 5
         for point in points_in_contour:
             x, y = point
@@ -99,10 +85,6 @@ def simple_circle(circle_range):
             (0.5 + 0.5 * np.sin(angle))
         points.append((x, y))
 
-    # fig, ax = plt.subplots()
-    # ax.set_aspect('equal')
-    # ax.scatter(*zip(*points))
-    # plt.show()
     return points
 
 
@@ -129,11 +111,8 @@ def map_points_to_range(points, x_range, y_range):
 
     new_points = []
     for x, y in points:
-        # scale the x coord and shift it to the correct range
         x_new = (x - min_x) * scale_x + x_range[0]
-        # USE THIS TO FLIP UPSIDE DOWN
         y_new = (max_y - y) * scale_y + y_range[0]
-        # y_new = (y - min_y) * scale_y + y_range[0] #scale the y coord and shift it to the correct range
 
         new_points.append((x_new, y_new))
 
@@ -174,7 +153,7 @@ def create_hexagon(center, diameter):
     return patches.RegularPolygon(center, numVertices=6, radius=radius, orientation=angle_offset, fill=True)
 
 
-def generate_circle_jsons(range):
+def generate_circle_jsons(range, fill_color="purple", border_color="yellow"):
     """
     Generates json files for circles with different fill and border colors.
 
@@ -185,7 +164,7 @@ def generate_circle_jsons(range):
     -------
         None
     """
-    # FIX FILL AND BORDER COLORq
+
     points = simple_circle(range)
     circle_points_alternating = {fill_color: [], border_color: []}
     for i, point in enumerate(points):
@@ -196,7 +175,6 @@ def generate_circle_jsons(range):
 
     save_to_json(circle_points_alternating, "color_switch_circle_pts.json")
 
-    # plot the purple and yellow points
     fig, ax = plt.subplots(figsize=(8, 6))
     plt.plot(
         *zip(*circle_points_alternating[fill_color]), marker='o', color=fill_color, ls='')
@@ -204,7 +182,7 @@ def generate_circle_jsons(range):
         *zip(*circle_points_alternating[border_color]), marker='o', color=border_color, ls='')
     plt.show()
 
-    # make half of the points purple and half of the points yellow (NOT ALTERNATING)
+    # Make half of the points purple and half of the points yellow 
     circle_points_half = {fill_color: [], border_color: []}
 
     for i, point in enumerate(points):
@@ -256,15 +234,11 @@ def make_college_logo(img_filename, json_filename, skip_points, range, scales, b
     plt.xlim(x_range)
     plt.ylim(y_range)
 
-    # Plotting circles for inner points
     for x, y in inner_points:
-        # Diameter 0.025 meters
         circle = patches.Circle((x, y), 0.02 / 2, color=fill_color, fill=True)
         ax.add_patch(circle)
 
-    # Plotting circles for border points
     for x, y in border_points:
-        # Diameter 0.025 meters
         circle = patches.Circle(
             (x, y), 0.02 / 2, color=border_color, fill=True)
         ax.add_patch(circle)
@@ -278,80 +252,65 @@ def make_college_logo(img_filename, json_filename, skip_points, range, scales, b
 
     save_to_json(points_dict, json_filename)
 
-# green red yellow purple blue orange
-
-
 def main():
     """Generates json files for college logos."""
-    # x_range = (-0.2538, 0.1996)
-    # y_range = (0.4788, 0.73217)
 
-    knoxville_range = ((-0.2538, 0.0),
+
+    rect_range = ((-0.2538, 0.0),
                        (0.4788, 0.73217))
 
-    notre_dame_range = ((-0.2538, 0.0),
+    square_range = ((-0.2538, 0.17),
                         (0.4788, 0.73217))
 
-    #     x_range = (-0.2538, 0.1996)
-    # y_range = (0.4788, 0.73217)
 
-    make_college_logo(img_filename="notre_dame.png",
+    make_college_logo(img_filename="images/notre_dame.png",
                       json_filename="notre_dame.json",
                       skip_points=30,
-                      range=notre_dame_range,
+                      range=rect_range,
                       scales=(0.65, 0.65),
                       border_color="yellow",
                       fill_color="blue")
 
-    make_college_logo(img_filename="knoxville.png",
+    make_college_logo(img_filename="images/knoxville.png",
                       json_filename="knoxville.json",
                       skip_points=100,
-                      range=knoxville_range,
+                      range=square_range,
                       scales=(0.6, 0.6),
                       border_color="orange",
                       fill_color="orange")
 
-    make_college_logo(img_filename="maryland.png",
+    make_college_logo(img_filename="images/maryland.png",
                       json_filename="maryland.json",
                       skip_points=50,
-                      range=notre_dame_range,
+                      range=square_range,
                       scales=(0.6, 0.5),
                       border_color="yellow",
                       fill_color="red")
 
-    make_college_logo(img_filename="S.png",
+    make_college_logo(img_filename="images/S.png",
                       json_filename="swarthmore.json",
                       skip_points=20,
-                      range=knoxville_range,
+                      range=square_range,
                       scales=(0.3, 0.3),
                       border_color="orange",
                       fill_color="red")
 
-    make_college_logo(img_filename="gtech.png",
+    make_college_logo(img_filename="images/gtech.png",
                       json_filename="gtech_yellow.json",
                       skip_points=13,
-                      range=notre_dame_range,
+                      range=square_range,
                       scales=(0.6, 0.6),
                       border_color="blue",
                       fill_color="yellow")
 
-    make_college_logo(img_filename="gtech.png",
+    make_college_logo(img_filename="images/gtech.png",
                       json_filename="gtech_blue.json",
                       skip_points=13,
-                      range=notre_dame_range,
+                      range=square_range,
                       scales=(0.6, 0.6),
                       border_color="yellow",
                       fill_color="blue")
 
-    # circle_range = ((-0.2538, 0.17), #xrange
-    #                 (0.4788, 0.73217)) #yrange
-    # generate_circle_jsons(circle_range)
-
-    # # save_to_csv(mapped_points, "N_points.csv")
-    # with open('notre_dame_points.json', 'w') as fp:
-    #     json.dump(points_dict, fp)
-    # # save_to_csv(points_dict[fill_color], "N_purple_points.csv")
-    # # save_to_csv(points_dict[border_color], "N_yellow_points.csv")
 
 
 if __name__ == "__main__":
