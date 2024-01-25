@@ -36,7 +36,7 @@ For painting novel drawings, place an image in `/waypoints/images`. The waypoint
 
 `listen_apriltags_interfaces` consists of the custom msg, `Loc`, to interact with the brush locations found via april tags.
 
-`take_picture` package creates the location of the paint dots from a specific image using a Canny edge detector and OpenCV to descritize the outline.
+`take_picture` package creates the location of the paint dots from a specific image using a Canny edge detector and OpenCV to discretize the outline.
 
 `take_picture_interfaces` contains the custom message type to publish the dot locations.
 
