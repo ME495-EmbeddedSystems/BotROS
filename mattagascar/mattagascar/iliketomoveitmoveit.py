@@ -89,9 +89,9 @@ class ILikeToMoveItMoveIt(Node):
         self.state = State.START
 
         self.timer = self.create_timer(1 / 100, callback=self.timer_callback)
-        self.apriltagsub = self.create_subscription(
-            Loc, "paint_loc", self.apriltagloc_cb, 10
-        )
+        # self.apriltagsub = self.create_subscription(
+        #     Loc, "paint_loc", self.apriltagloc_cb, 10
+        # )
 
         file_name = "heart_points_half.json"
         f = open(file_name)
@@ -106,13 +106,15 @@ class ILikeToMoveItMoveIt(Node):
         f.close()
         self.brushlocs = {}
 
+        ####### TODO: LOOK INTO CURRRENT COLOR
         self.current_color_idx = 0
         self.current_color = self.color_list[self.current_color_idx]
 
         self.buffer = Buffer()
         self.listener = TransformListener(self.buffer, self)
         self.zoffset = 0.067
-
+        
+        # TODO: Calibrate dip heights
         self.z_brush_standoff = 0.3 + self.zoffset + 0.1
         self.z_paint_standoff = 0.4 + self.zoffset
         self.z_brush_dot = 0.125 + 0.045 + 0.012  # 0.01
@@ -120,6 +122,7 @@ class ILikeToMoveItMoveIt(Node):
         self.z_brush_dip = 0.16 + self.zoffset + 0.011  # 0.012
         self.z_dot_standoff = 0.25
 
+        # TODO: pickup_loc is  addressed in self.state
         # paintbrush location
         # brush standoff pose
         self.pickup_loc = Pose()
@@ -130,6 +133,7 @@ class ILikeToMoveItMoveIt(Node):
 
         self.point_count = 0
 
+        # TODO: pickup_dip is  addressed in self.state
         # brush pickup location
         self.pickup_dip = Pose()
         self.pickup_dip.position.x = self.pickup_loc.position.x
@@ -143,57 +147,80 @@ class ILikeToMoveItMoveIt(Node):
 
         self.visited = []
         self.count = 0
-        self.paintx = 0.0
-        self.painty = 0.0
-        self.paintz = 0.0
 
         self.current_waypoints = []
 
         self.count_brush = 0
+        
+        # TODO: Calibrate brush locations
+        self.brushlocs["blue"] = [-99999, -99999]
+        self.brushlocs["red"] = [-99999, -99999]
+        self.brushlocs["purple"] = [-99999, -99999]
+        self.brushlocs["yellow"] = [-99999, -99999]
+        self.brushlocs["green"] =  [-99999, -99999]
+        self.brushlocs["orange"] = [-99999, -99999]
+        self.brushlocs["palete"] = [-99999, -99999]
+        
+        
+####### TODO: REMOVAL OF APRILTAGS
+    # def apriltagloc_cb(self, msg: Loc):
+    #     """
+    #     Get position of the paint brushes via the subscription from the paint_loc topic.
 
-    def apriltagloc_cb(self, msg: Loc):
-        """
-        Get position of the paint brushes via the subscription from the paint_loc topic.
+    #     Args:
+    #         msg (Loc): Message from the paint_loc topic.
 
-        Args:
-            msg (Loc): Message from the paint_loc topic.
+    #     Returns
+    #     -------
+    #         None.
 
-        Returns
-        -------
-            None.
+    #     """
+    #     if self.count_brush == 0:
+    #         try:
+    #             self.brushlocs["purple"] = msg.purple
+    #             self.brushlocs["yellow"] = msg.yellow
+    #             self.brushlocs["red"] = msg.red
+    #             self.brushlocs["blue"] = msg.blue
+    #             self.brushlocs["green"] = msg.green
+    #             self.brushlocs["orange"] = msg.orange
 
-        """
-        if self.count_brush == 0:
-            try:
-                self.brushlocs["purple"] = msg.purple
-                self.brushlocs["yellow"] = msg.yellow
-                self.brushlocs["red"] = msg.red
-                self.brushlocs["blue"] = msg.blue
-                self.brushlocs["green"] = msg.green
-                self.brushlocs["orange"] = msg.orange
+    #             self.brushlocs["palete"] = msg.palete
+    #             self.set_PaintLocs()
+    #             self.count_brush = 1
+    #         except Exception:
+    #             self.get_logger().info(
+    #                 "Brush Locations Not Initlaized Yet in April Tag Callback"
+    #             )
 
-                self.brushlocs["palete"] = msg.palete
-                self.set_PaintLocs()
-                self.count_brush = 1
-            except Exception:
-                self.get_logger().info(
-                    "Brush Locations Not Initlaized Yet in April Tag Callback"
-                )
+######## TODO: NEED TO HARDCODE BRUSH LOCATION
+    # def set_PaintLocs(self):
+    #     """Get position of current paint color via a transform."""
+    #     try:
+    #         # get the latest transform between left and right
+    #         trans = self.buffer.lookup_transform(
+    #             "panda_link0", self.current_color + "_color", rclpy.time.Time()
+    #         )
+    #         self.current_paint_x = trans.transform.translation.x
+    #         self.current_paint_y = trans.transform.translation.y
+    #         self.current_paint_z = trans.transform.translation.z
 
-    def set_PaintLocs(self):
-        """Get position of current paint color via a transform."""
-        try:
-            # get the latest transform between left and right
-            trans = self.buffer.lookup_transform(
-                "panda_link0", self.current_color + "_color", rclpy.time.Time()
-            )
-            self.current_paint_x = trans.transform.translation.x
-            self.current_paint_y = trans.transform.translation.y
-            self.current_paint_z = trans.transform.translation.z
+    #     except tf2_ros.LookupException as e:
+    #         self.get_logger().info(f"Lookup exception: {e}")
 
-        except tf2_ros.LookupException as e:
-            self.get_logger().info(f"Lookup exception: {e}")
+    #     self.paint_location_standoff = Pose()
+    #     self.paint_location_dip = Pose()
 
+    #     self.paint_location_standoff.position.z = self.z_paint_standoff
+    #     self.paint_location_standoff.orientation = self.orientation
+
+    #     self.paint_location_dip.position.z = self.z_paint_dip
+    #     self.paint_location_dip.orientation = self.orientation
+
+    #     self.paint_location_standoff.position.x = self.current_paint_x
+    #     self.paint_location_dip.position.x = self.current_paint_x
+    #     self.paint_location_standoff.position.y = self.current_paint_y
+    #     self.paint_location_dip.position.y = self.current_paint_y
+        
         self.paint_location_standoff = Pose()
         self.paint_location_dip = Pose()
 
@@ -202,11 +229,12 @@ class ILikeToMoveItMoveIt(Node):
 
         self.paint_location_dip.position.z = self.z_paint_dip
         self.paint_location_dip.orientation = self.orientation
-
-        self.paint_location_standoff.position.x = self.current_paint_x
-        self.paint_location_dip.position.x = self.current_paint_x
-        self.paint_location_standoff.position.y = self.current_paint_y
-        self.paint_location_dip.position.y = self.current_paint_y
+        
+        # TODO: replace paint locations
+        self.paint_location_standoff.position.x = -99999
+        self.paint_location_dip.position.x = -99999
+        self.paint_location_standoff.position.y = -99999
+        self.paint_location_dip.position.y = -99999
 
     def timer_callback(self):
         """Use to determine what the robot should be doing at any given time."""
@@ -223,19 +251,6 @@ class ILikeToMoveItMoveIt(Node):
             else:
                 self.get_logger().info("need to input a command to start")
 
-        if self.state == State.TEST:
-            try:
-                # get the latest transform between left and right
-                trans = self.buffer.lookup_transform(
-                    "panda_link0", "brush", rclpy.time.Time()
-                )
-                self.paintx = trans.transform.translation.x
-                self.painty = trans.transform.translation.y
-                self.paintz = trans.transform.translation.z
-
-            except tf2_ros.LookupException as e:
-                # the frames don't exist yet
-                self.get_logger().info(f"Lookup exception: {e}")
 
         if self.state == State.PICKUP:
             # go to paint brush location and dip down
@@ -246,6 +261,7 @@ class ILikeToMoveItMoveIt(Node):
                     f"Current Color PICKUP: {self.current_color}")
                 self.pickup_loc = Pose()
                 self.get_logger().info(f"BRUSH LOCATION: {self.brushlocs}")
+
                 self.pickup_loc.position.x = self.brushlocs[self.current_color][0]
                 self.pickup_loc.position.y = self.brushlocs[self.current_color][1]
                 self.pickup_loc.position.z = self.z_brush_standoff
